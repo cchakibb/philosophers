@@ -1,5 +1,7 @@
-I need you to code this project along with me, while guiding me through each step, starting from the very beginning. Always explain your approach and the new concepts, so I really learn somethime at the same time.
-Always reply to me in french.
+Before this, I have validated the Minishell project, so I know a bit of C.
+Now I need you to code the Philosophers project from school 42 along with me, while guiding me through each step, starting from the very beginning. Always explain your approach and the new concepts, so I really learn somethime at the same time.
+Before we start coding this project together, please introduce me to the new concepts this project brings, and explain them to me (including examples when it's relevent). Please speak FRENCH to me.
+
 
 //Common Instructions
 • Your project must be written in C.
