@@ -1,27 +1,32 @@
-# Nom de l’exécutable
 NAME = philo
 
-# Compilateur
-CC = cc
+CC = cc #-g -fsanitize=address
 
-# Flags de compilation
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror
 
-# Sources et objets
-SRCS = philo.c philosopher.c utils.c
-OBJS = $(SRCS:.c=.o)
+RM = rm -f
 
-# Règles
-all: $(NAME)
+SRCS = main.c utils.c init.c threads.c
+
+OBJ_DIR = obj
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+
+all: $(OBJ_DIR) $(NAME)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+	$(CC) $(CFLAGS) -pthread -o $(NAME) $(OBJS)
 
 clean:
-	rm -f $(OBJS)
+	$(RM) -r $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
 
 re: fclean all
 
