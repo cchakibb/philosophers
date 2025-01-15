@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:12 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 11:18:47 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 21:42:31 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int init_mutexes(t_data *data)
     data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philos);
     if (!data->forks)
         return (1);
-
     i = 0;
     while (i < data->num_philos)
     {
@@ -101,3 +100,4 @@ int init_philos(t_data *data)
     }
     return (0);
 }
+

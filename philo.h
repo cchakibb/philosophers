@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:19:10 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 11:25:56 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 21:42:57 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ typedef struct s_data
     int             time_to_sleep;
     int             num_meals_to_eat;
     long long       start_time;
-    
-    // Mutex protégeant someone_died, last_meal_time, meals_eaten
     pthread_mutex_t state_mutex;
     int             someone_died;
 
@@ -63,9 +61,10 @@ int         ft_atoi(const char *str);
 int         create_threads(t_data *data);
 void        *monitor_philos(void *arg);
 void        *philo_routine(void *arg);
-int			has_died(t_data *data);
+int         has_died(t_data *data);
 
 // utils.c
 void        print_message(t_philo *philo, char *message);
 
 #endif
+

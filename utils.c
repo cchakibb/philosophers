@@ -6,17 +6,13 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:04 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 10:11:04 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 21:42:02 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // utils.c
 #include "philo.h"
 
-/*
- * Vérification protégée de someone_died dans print_message,
- * pour éviter d’afficher quand la simulation est finie.
- */
 int has_died(t_data *data)
 {
     int val;
@@ -39,3 +35,4 @@ void print_message(t_philo *philo, char *message)
     }
     pthread_mutex_unlock(&philo->data->write_mutex);
 }
+
