@@ -6,11 +6,10 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:20:51 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 23:13:25 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 23:52:20 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// main.c
 #include "philo.h"
 
 static void	cleanup_resources(t_data *data)
@@ -43,19 +42,6 @@ static int	join_threads(t_data *data)
 	return (0);
 }
 
-static int	init_and_start(t_data *data, int argc, char **argv)
-{
-	if (init_data(data, argc, argv) != 0)
-		return (1);
-	if (init_mutexes(data) != 0)
-		return (1);
-	if (init_philos(data) != 0)
-		return (1);
-	if (create_threads(data) != 0)
-		return (1);
-	return (0);
-}
-
 int	main(int argc, char **argv)
 {
 	t_data	data;
@@ -77,4 +63,3 @@ int	main(int argc, char **argv)
 	cleanup_resources(&data);
 	return (0);
 }
-

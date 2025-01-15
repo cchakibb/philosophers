@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:19:10 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 22:52:55 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 23:46:47 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,18 @@ typedef struct s_data
 int				init_philos(t_data *data);
 long long		get_time(void);
 int				init_mutexes(t_data *data);
-int				init_data(t_data *data, int argc, char **argv);
-int				ft_atoi(const char *str);
+int				init_and_start(t_data *data, int argc, char **argv);
 
 // threads.c
 int				create_threads(t_data *data);
 void			*monitor_philos(void *arg);
 void			*philo_routine(void *arg);
 int				has_died(t_data *data);
+void			eating_phase(t_philo *philo);
+void			sleeping_thinking_phase(t_philo *philo);
+int				should_continue(t_philo *philo);
+void			update_last_meal(t_philo *philo);
+void			increment_meals(t_philo *philo);
 
 // utils.c
 void			print_message(t_philo *philo, char *message);

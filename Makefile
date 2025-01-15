@@ -6,7 +6,8 @@ CFLAGS = -Wall -Wextra -Werror
 
 RM = rm -f
 
-SRCS = main.c utils.c init.c threads.c
+SRCS = main.c init_data.c init_philos.c philo_actions.c \
+		philo_routine.c monitor.c thread_utils.c
 
 OBJ_DIR = obj
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
