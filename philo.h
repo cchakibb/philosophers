@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:19:10 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/01 22:05:06 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/14 19:26:31 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,30 @@ typedef struct s_data
     int             time_to_sleep;
     int             num_meals_to_eat;
     long long       start_time;
+    
+    // Mutex protégeant someone_died, last_meal_time, meals_eaten
+    pthread_mutex_t state_mutex;
     int             someone_died;
+
     pthread_mutex_t *forks;
     pthread_mutex_t write_mutex;
     t_philo         *philos;
 }               t_data;
 
 // init.c
-int init_philos(t_data *data);
-long long get_time(void);
-int init_mutexes(t_data *data);
-int init_data(t_data *data, int argc, char **argv);
-int ft_atoi(const char *str);
+int         init_philos(t_data *data);
+long long   get_time(void);
+int         init_mutexes(t_data *data);
+int         init_data(t_data *data, int argc, char **argv);
+int         ft_atoi(const char *str);
 
-//threads.c
-int create_threads(t_data *data);
-void    *monitor_philos(void *arg);
-void    *philo_routine(void *arg);
+// threads.c
+int         create_threads(t_data *data);
+void        *monitor_philos(void *arg);
+void        *philo_routine(void *arg);
+int			has_died(t_data *data);
 
 // utils.c
-void	print_message(t_philo *philo, char *message);
+void        print_message(t_philo *philo, char *message);
 
 #endif

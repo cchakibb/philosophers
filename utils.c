@@ -6,18 +6,32 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:04 by chbachir          #+#    #+#             */
-/*   Updated: 2024/12/30 14:04:09 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/14 19:26:18 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	print_message(t_philo *philo, char *message)
+/*
+ * Vérification protégée de someone_died dans print_message,
+ * pour éviter d’afficher quand la simulation est finie.
+ */
+int has_died(t_data *data)
 {
-    long long	time;
+    int val;
+
+    pthread_mutex_lock(&data->state_mutex);
+    val = data->someone_died;
+    pthread_mutex_unlock(&data->state_mutex);
+    return (val);
+}
+
+void print_message(t_philo *philo, char *message)
+{
+    long long time;
 
     pthread_mutex_lock(&philo->data->write_mutex);
-    if (philo->data->someone_died == 0)
+    if (!has_died(philo->data))
     {
         time = get_time() - philo->data->start_time;
         printf("%lld %d %s\n", time, philo->id, message);
