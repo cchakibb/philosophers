@@ -6,10 +6,11 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:20:51 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/14 19:41:40 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:40:37 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// main.c
 #include "philo.h"
 
 int main(int argc, char **argv)
@@ -38,11 +39,15 @@ int main(int argc, char **argv)
         return (1);
     }
 
-    // Attendre que tous les philosophes terminent
+    // Attendre que le moniteur signale la fin
+    while (!has_died(&data))
+        usleep(1000);
+
+    // Attendre que tous les threads philosophes se terminent
     i = 0;
     while (i < data.num_philos)
     {
-        if (pthread_detach(data.philos[i].thread) != 0)
+        if (pthread_join(data.philos[i].thread, NULL) != 0)
         {
             write(2, ERROR_MESSAGE, 6);
             return (1);
@@ -50,11 +55,7 @@ int main(int argc, char **argv)
         i++;
     }
 
-    // Attendre que le moniteur signale la fin
-    while (!has_died(&data))
-        usleep(1000);
-
-    // Nettoyage des ressources
+    // Nettoyage des ressources une fois que tous les threads sont terminés
     i = 0;
     while (i < data.num_philos)
         pthread_mutex_destroy(&data.forks[i++]);

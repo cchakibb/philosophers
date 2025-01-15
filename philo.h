@@ -6,10 +6,11 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:19:10 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/14 19:26:31 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 11:25:56 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// philo.h
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -17,6 +18,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <limits.h>
 # include <sys/time.h>
 
 # define ERROR_MESSAGE "Error\n"

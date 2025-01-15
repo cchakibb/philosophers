@@ -6,10 +6,11 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:29 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/14 19:42:40 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 11:22:24 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// threads.c
 #include "philo.h"
 
 /* ------------------ Fonctions auxiliaires protégées ------------------ */
@@ -68,7 +69,10 @@ static int should_continue(t_philo *philo)
 void *philo_routine(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
-	// Cas spécial pour un seul philosophe
+    pthread_mutex_t *first_fork;
+    pthread_mutex_t *second_fork;
+
+    // Cas spécial pour un seul philosophe
     if (philo->data->num_philos == 1)
     {
         pthread_mutex_lock(philo->left_fork);
@@ -78,28 +82,41 @@ void *philo_routine(void *arg)
         pthread_mutex_unlock(philo->left_fork);
         return (NULL);
     }
+
     // Décalage pour les philosophes pairs
     if (philo->id % 2 == 0)
         usleep(philo->data->time_to_eat * 1000);
 
+    // Déterminer l'ordre des fourchettes (la plus petite en premier)
+    if (philo->left_fork < philo->right_fork)
+    {
+        first_fork = philo->left_fork;
+        second_fork = philo->right_fork;
+    }
+    else
+    {
+        first_fork = philo->right_fork;
+        second_fork = philo->left_fork;
+    }
+
     while (!has_died(philo->data) && should_continue(philo))
     {
         /* ---- Prise de la première fourchette ---- */
-        pthread_mutex_lock(philo->left_fork);
+        pthread_mutex_lock(first_fork);
         if (has_died(philo->data))
         {
-            pthread_mutex_unlock(philo->left_fork);
-            break ;
+            pthread_mutex_unlock(first_fork);
+            break;
         }
         print_message(philo, "has taken a fork");
 
         /* ---- Prise de la deuxième fourchette ---- */
-        pthread_mutex_lock(philo->right_fork);
+        pthread_mutex_lock(second_fork);
         if (has_died(philo->data))
         {
-            pthread_mutex_unlock(philo->right_fork);
-            pthread_mutex_unlock(philo->left_fork);
-            break ;
+            pthread_mutex_unlock(second_fork);
+            pthread_mutex_unlock(first_fork);
+            break;
         }
         print_message(philo, "has taken a fork");
 
@@ -110,17 +127,16 @@ void *philo_routine(void *arg)
             update_last_meal(philo);
             usleep(philo->data->time_to_eat * 1000);
 
-            // Double check : si à ce moment la simulation est finie, on n’incrémente pas.
             if (!has_died(philo->data))
                 increment_meals(philo);
         }
 
         // Libération des fourchettes
-        pthread_mutex_unlock(philo->right_fork);
-        pthread_mutex_unlock(philo->left_fork);
+        pthread_mutex_unlock(second_fork);
+        pthread_mutex_unlock(first_fork);
 
         if (has_died(philo->data))
-            break ;
+            break;
 
         /* ---- Dormir ---- */
         print_message(philo, "is sleeping");

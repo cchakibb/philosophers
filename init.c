@@ -6,30 +6,28 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:12 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/14 19:14:31 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 11:18:47 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// init.c
 #include "philo.h"
 
 int ft_atoi(const char *str)
 {
     int i = 0;
-    int sign = 1;
-    int res = 0;
+    long res = 0;
 
-    while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-        i++;
-    if (str[i] == '-')
+    while (str[i])
     {
-        sign = -1;
+        if (str[i] < '0' || str[i] > '9')
+            return (-1);
+        res = res * 10 + (str[i] - '0');
+        if (res > INT_MAX)
+            return (-1);
         i++;
     }
-    else if (str[i] == '+')
-        i++;
-    while (str[i] >= '0' && str[i] <= '9')
-        res = res * 10 + (str[i++] - '0');
-    return (res * sign);
+    return ((int)res);
 }
 
 int init_data(t_data *data, int argc, char **argv)
@@ -42,7 +40,6 @@ int init_data(t_data *data, int argc, char **argv)
         data->num_meals_to_eat = ft_atoi(argv[5]);
     else
         data->num_meals_to_eat = -1;
-
     data->someone_died = 0;
     if (data->num_philos <= 0 || data->time_to_die <= 0
         || data->time_to_eat <= 0 || data->time_to_sleep <= 0)

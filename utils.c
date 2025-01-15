@@ -6,10 +6,11 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:04 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/14 19:26:18 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:11:04 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// utils.c
 #include "philo.h"
 
 /*
