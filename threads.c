@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:29 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 11:22:24 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 11:58:11 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void *philo_routine(void *arg)
 
     // Décalage pour les philosophes pairs
     if (philo->id % 2 == 0)
-        usleep(philo->data->time_to_eat * 1000);
+        usleep(200);
 
     // Déterminer l'ordre des fourchettes (la plus petite en premier)
     if (philo->left_fork < philo->right_fork)
