@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:29 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 11:58:11 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:10:53 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,13 @@ static long long get_last_meal(t_philo *philo)
 static int should_continue(t_philo *philo)
 {
     pthread_mutex_lock(&philo->data->state_mutex);
-    if (philo->data->someone_died || 
-        (philo->data->num_meals_to_eat != -1 && 
-         philo->meals_eaten >= philo->data->num_meals_to_eat))
+    if (philo->data->num_meals_to_eat != -1 && 
+        philo->meals_eaten >= philo->data->num_meals_to_eat)
+    {
+        pthread_mutex_unlock(&philo->data->state_mutex);
+        return (0);
+    }
+    if (philo->data->someone_died)
     {
         pthread_mutex_unlock(&philo->data->state_mutex);
         return (0);
@@ -85,34 +89,23 @@ void *philo_routine(void *arg)
 
     // Décalage pour les philosophes pairs
     if (philo->id % 2 == 0)
-        usleep(200);
+        usleep(1000);
 
-    // Déterminer l'ordre des fourchettes (la plus petite en premier)
-    if (philo->left_fork < philo->right_fork)
-    {
-        first_fork = philo->left_fork;
-        second_fork = philo->right_fork;
-    }
-    else
-    {
-        first_fork = philo->right_fork;
-        second_fork = philo->left_fork;
-    }
+    first_fork = (philo->id % 2 == 0) ? philo->right_fork : philo->left_fork;
+    second_fork = (philo->id % 2 == 0) ? philo->left_fork : philo->right_fork;
 
-    while (!has_died(philo->data) && should_continue(philo))
+    while (should_continue(philo))
     {
-        /* ---- Prise de la première fourchette ---- */
         pthread_mutex_lock(first_fork);
-        if (has_died(philo->data))
+        if (!should_continue(philo))
         {
             pthread_mutex_unlock(first_fork);
             break;
         }
         print_message(philo, "has taken a fork");
 
-        /* ---- Prise de la deuxième fourchette ---- */
         pthread_mutex_lock(second_fork);
-        if (has_died(philo->data))
+        if (!should_continue(philo))
         {
             pthread_mutex_unlock(second_fork);
             pthread_mutex_unlock(first_fork);
@@ -120,30 +113,25 @@ void *philo_routine(void *arg)
         }
         print_message(philo, "has taken a fork");
 
-        /* ---- Manger ---- */
-        if (!has_died(philo->data))
-        {
-            print_message(philo, "is eating");
-            update_last_meal(philo);
-            usleep(philo->data->time_to_eat * 1000);
+        print_message(philo, "is eating");
+        update_last_meal(philo);
+        usleep(philo->data->time_to_eat * 1000);
+        increment_meals(philo);
 
-            if (!has_died(philo->data))
-                increment_meals(philo);
-        }
-
-        // Libération des fourchettes
         pthread_mutex_unlock(second_fork);
         pthread_mutex_unlock(first_fork);
 
-        if (has_died(philo->data))
+        if (!should_continue(philo))
             break;
 
-        /* ---- Dormir ---- */
         print_message(philo, "is sleeping");
         usleep(philo->data->time_to_sleep * 1000);
 
-        /* ---- Penser ---- */
+        if (!should_continue(philo))
+            break;
+
         print_message(philo, "is thinking");
+        usleep(100); // Petit délai pour éviter la famine
     }
     return (NULL);
 }
@@ -183,7 +171,7 @@ void *monitor_philos(void *arg)
     t_data  *data = (t_data *)arg;
     int     i;
 
-    while (!has_died(data))
+    while (1)
     {
         i = 0;
         if (all_philos_ate_enough(data))
@@ -198,11 +186,11 @@ void *monitor_philos(void *arg)
             {
                 print_message(&data->philos[i], "died");
                 set_died(data);
-                break;
+                return (NULL);
             }
             i++;
         }
-        usleep(100); // Réduire à 100 microsecondes pour plus de réactivité
+        usleep(100);
     }
     return (NULL);
 }
