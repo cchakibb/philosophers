@@ -6,7 +6,7 @@
 /*   By: chbachir <chbachir@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 13:41:29 by chbachir          #+#    #+#             */
-/*   Updated: 2025/01/15 23:07:34 by chbachir         ###   ########.fr       */
+/*   Updated: 2025/01/15 23:14:47 by chbachir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,40 @@ static void	release_forks(t_philo *philo)
 	}
 }
 
+static int	handle_single_philo(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	print_message(philo, "has taken a fork");
+	pthread_mutex_unlock(philo->left_fork);
+	while (!has_died(philo->data))
+	{
+		if (get_time() - philo->last_meal_time > philo->data->time_to_die)
+			break ;
+		usleep(100);
+	}
+	return (0);
+}
+
+static void	eating_phase(t_philo *philo)
+{
+	take_forks(philo);
+	print_message(philo, "is eating");
+	update_last_meal(philo);
+	usleep(philo->data->time_to_eat * 1000);
+	increment_meals(philo);
+	release_forks(philo);
+}
+
+static void	sleeping_thinking_phase(t_philo *philo)
+{
+	print_message(philo, "is sleeping");
+	usleep(philo->data->time_to_sleep * 1000);
+	if (!should_continue(philo))
+		return ;
+	print_message(philo, "is thinking");
+	usleep(500);
+}
+
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
@@ -98,37 +132,15 @@ void	*philo_routine(void *arg)
 	if (philo->id % 2 == 0)
 		usleep(1000);
 	if (philo->data->num_philos == 1)
-	{
-		pthread_mutex_lock(philo->left_fork);
-		print_message(philo, "has taken a fork");
-		pthread_mutex_unlock(philo->left_fork);
-		while (!has_died(philo->data))
-		{
-			if (get_time() - philo->last_meal_time > philo->data->time_to_die)
-				break ;
-			usleep(100);
-		}
-		return (NULL);
-	}
+		return (handle_single_philo(philo), NULL);
 	while (should_continue(philo))
 	{
 		if (!should_continue(philo))
 			break ;
-		take_forks(philo);
-
-		print_message(philo, "is eating");
-		update_last_meal(philo);
-		usleep(philo->data->time_to_eat * 1000);
-		increment_meals(philo);
-		release_forks(philo);
+		eating_phase(philo);
 		if (!should_continue(philo))
 			break ;
-		print_message(philo, "is sleeping");
-		usleep(philo->data->time_to_sleep * 1000);
-		if (!should_continue(philo))
-			break ;
-		print_message(philo, "is thinking");
-		usleep(500);
+		sleeping_thinking_phase(philo);
 	}
 	return (NULL);
 }
